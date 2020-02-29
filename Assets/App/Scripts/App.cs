@@ -191,7 +191,7 @@ namespace NRatel.TextureUnpacker
         private IEnumerator Unpack(string pngFilePath, string plistFilePath)
         {
             LoadFiles(pngFilePath, plistFilePath);
-            if (loader == null || plist == null)
+            if (loader == null || plist.frames == null)
             {
                 appUI.SetTipErr("没有指定可执行的plist&png");
                 isExecuting = false;
@@ -295,7 +295,7 @@ namespace NRatel.TextureUnpacker
                     {
                         appUI.SetTipInfo($"存在与当前plist件同名pvr.ccz文的文件.\n{pvrcczFilePath}");
                         //use `TexturePacker` command convert pvr.ccz to png file.
-                        var args = $"{pvrcczFilePath} --sheet {pngFilePath}";
+                        var args = $"{pvrcczFilePath} --sheet {pngFilePath} --opt RGBA8888 --algorithm MaxRects --trim-mode Trim --size-constraints POT";
                         System.Diagnostics.Process.Start("TexturePacker", args);
                         // if (process.Start())//execute command
                         appUI.SetTipInfo($"Convert {pvrcczFilePath} to {pngFilePath} successful!");

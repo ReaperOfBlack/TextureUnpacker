@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace NRatel.TextureUnpacker
 {
-    public class SizeInt
+    public struct SizeInt
     {
         public int width;
         public int height;
@@ -14,7 +14,7 @@ namespace NRatel.TextureUnpacker
         }
     }
 
-    public class Metadata
+    public struct Metadata
     {
         public int format;
         public SizeInt size;
@@ -28,7 +28,7 @@ namespace NRatel.TextureUnpacker
         }
     }
 
-    public class Frame
+    public struct Frame
     {
         public string textureName;
         public Vector2Int startPos;
@@ -48,7 +48,7 @@ namespace NRatel.TextureUnpacker
         }
     }
 
-    public class Plist
+    public struct Plist
     {
         public string version;
         public string path;
