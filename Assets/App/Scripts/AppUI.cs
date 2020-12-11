@@ -40,7 +40,7 @@ namespace NRatel.TextureUnpacker
 
             this.m_Btn_ContactMe.onClick.AddListener(() =>
             {
-                Application.OpenURL("https://github.com/ReaperOfBlack/TextureUnpacker");
+                Application.OpenURL("https://github.com/real-re/TextureUnpacker");
             });
         }
 

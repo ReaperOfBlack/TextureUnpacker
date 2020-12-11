@@ -13,11 +13,9 @@ namespace NRatel.TextureUnpacker
     {
         internal enum UnpackMode
         {
-            Split = 0,
-            Restore = 1,
-            All = 2,
-            FindAllPlistAndSplit = 3,
-            DeepFindAllPlistAndSplit = 4,
+            OnlyOneFile,
+            SearchAllPlistAndSplit,
+            DeepSearchAllPlistAndSplit,
         }
 
         private UnpackMode currentUnpackMode;
@@ -115,9 +113,9 @@ namespace NRatel.TextureUnpacker
                 var path = appUI.m_InputField.text;
                 if (!string.IsNullOrEmpty(path))
                 {
-                    if (currentUnpackMode == UnpackMode.FindAllPlistAndSplit)
+                    if (currentUnpackMode == UnpackMode.SearchAllPlistAndSplit)
                         FindAllPlistAndSplit(path);
-                    else if (currentUnpackMode == UnpackMode.DeepFindAllPlistAndSplit)
+                    else if (currentUnpackMode == UnpackMode.DeepSearchAllPlistAndSplit)
                         FindAllPlistAndSplit(path, true);
                     else
                     {
@@ -174,17 +172,17 @@ namespace NRatel.TextureUnpacker
                     plist = loader.LoadPlist(plistFilePath);
                     bigTexture = loader.LoadTexture(pngFilePath, plist.metadata);
                     appUI.SetImage(bigTexture);
-                    appUI.SetTip($"名称: {plist.metadata.textureFileName} | 类型: format_{plist.metadata.format} | 大小: {plist.metadata.size.width} * {plist.metadata.size.height}");
+                    appUI.SetTip($"Name: {plist.metadata.textureFileName} | Type: format_{plist.metadata.format} | Size: {plist.metadata.size.width} * {plist.metadata.size.height}");
                     m_SavePath = Path.Combine(isMultipleSplitMode ? m_RootPath : Path.GetDirectoryName(plist.path), "__output__", Path.GetFileNameWithoutExtension(plist.metadata.textureFileName));
                 }
                 else
                 {
-                    appUI.SetTipErr("无法识别的plist类型!!!\n请联系作者");
+                    appUI.SetTipErr("Unknown plist type!!!\nPlease contact me");
                 }
             }
             catch
             {
-                appUI.SetTipErr("出错了!!!\n请联系作者\n↓");
+                appUI.SetTipErr("Something wrong!!!\nPlease contact me\n↓");
             }
         }
 
@@ -206,26 +204,9 @@ namespace NRatel.TextureUnpacker
 
             switch (currentUnpackMode)
             {
-                case UnpackMode.Restore:
-                    foreach (var frame in plist.frames)
-                    {
-                        Core.Restore(bigTexture, frame);
-                        appUI.SetTipProcess($"进度：{++count} / {total} {frame.textureName} {(count < total ? null : IsDone())}");
-                        yield return null;
-                    }
-                    break;
-                case UnpackMode.All:
-                    foreach (var frame in plist.frames)
-                    {
-                        Core.Split(bigTexture, frame);
-                        Core.Restore(bigTexture, frame);
-                        appUI.SetTipProcess($"进度：{++count} / {total} {frame.textureName} {(count < total ? null : IsDone())}");
-                        yield return null;
-                    }
-                    break;
-                case UnpackMode.Split:
-                case UnpackMode.FindAllPlistAndSplit:
-                case UnpackMode.DeepFindAllPlistAndSplit:
+                case UnpackMode.OnlyOneFile:
+                case UnpackMode.SearchAllPlistAndSplit:
+                case UnpackMode.DeepSearchAllPlistAndSplit:
                 default:
                     foreach (var frame in plist.frames)
                     {
